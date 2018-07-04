@@ -9,6 +9,11 @@ import android.widget.TextView;
 
 import java.util.List;
 
+
+/**
+ * Класс необходим для работы с RecyckerView, которое применяется в 3-ем фрагменте. В классе
+ * происходит переопределение методов в соответствии с созданным RecyckerView.
+ */
 public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.ViewHolder> {
 
     private List<String> strings;
@@ -26,12 +31,12 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String s = strings.get(position);
+        String s = strings.get(position);   //установка значений в вывод в соответствии с их позицией
         holder.textView.setText(s);
     }
 
     @Override
-    public int getItemCount() {
+    public int getItemCount() {//возвращаем текущий размер списка
         return strings.size();
     }
 
@@ -41,7 +46,7 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.ViewHolder> {
 
         ViewHolder(View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.item);
+            textView = itemView.findViewById(R.id.item); //связка текстВью
         }
     }
 }

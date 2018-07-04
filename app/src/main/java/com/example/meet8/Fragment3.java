@@ -17,43 +17,39 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс служит для вывод чисел в 3-й фрагмент. В методе onCreateView инициализируется работа класса
+ * MyLoader3. Этот класс выдает некоторое число и засовывает его в объект типа Message, далее в
+ * классе LocalHandler происходит получение числа из этого Message, которое помещается с список.
+ */
+
 public class Fragment3 extends Fragment implements LoaderManager.LoaderCallbacks<Void> {
 
-    private List<String> strings = new ArrayList<>();
-    private RecyclerView.Adapter adapter;
+    protected static List<String> strings = new ArrayList<>();
+    protected static RecyclerView.Adapter adapter;
 
-    private Handler handler;
+    private LocalHandler handler;
 
     @SuppressLint("HandlerLeak")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment3, container, false);
+        View view = inflater.inflate(R.layout.fragment3, container, false); //инфлэйтим вид 3 фрагмента
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        adapter = new ViewAdapter(strings);
+        adapter = new ViewAdapter(strings); //объявление адаптера и его установка в Ресайклер
         recyclerView.setAdapter(adapter);
 
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                strings.add(String.valueOf(msg.what));
-                adapter.notifyDataSetChanged();
-            }
-        };
-
+        handler = new LocalHandler(); //объявление Хандлера
+        getLoaderManager().initLoader(1, null, this).forceLoad(); //вызов onCreateLoader
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getLoaderManager().initLoader(1, null, this).forceLoad();
-    }
+    //Имплементация методов
 
     @NonNull
     @Override
     public Loader<Void> onCreateLoader(int id, Bundle args) {
-        return new MyLoader3(getContext(), handler);
+        return new MyLoader3(getContext(), handler); //Запуск
     }
 
     @Override
@@ -64,5 +60,13 @@ public class Fragment3 extends Fragment implements LoaderManager.LoaderCallbacks
     @Override
     public void onLoaderReset(@NonNull Loader<Void> loader) {
 
+    }
+}
+
+class LocalHandler extends Handler { //создание своего Хандлера с переопределенным методом
+    @Override
+    public void handleMessage(Message msg) {
+        Fragment3.strings.add(String.valueOf(msg.what));    //добавление в список нового значения
+        Fragment3.adapter.notifyDataSetChanged();
     }
 }
